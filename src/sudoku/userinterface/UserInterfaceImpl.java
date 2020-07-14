@@ -1,12 +1,13 @@
 package sudoku.userinterface;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
@@ -22,7 +23,7 @@ import sudoku.problemdomain.SudokuGame;
 import java.util.HashMap;
 
 public class UserInterfaceImpl implements IUserInterfaceContract.View,
-        EventHandler<KeyEvent> {
+        EventHandler<Event> {
 
     private final Stage stage;
     private final Group root;
@@ -41,6 +42,11 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View,
     private static final String SUDOKU = "Sudoku";
 
 
+    private Button resetBtn;
+    private Slider slider;
+    private Label label;
+
+
     public UserInterfaceImpl(Stage stage) {
         this.stage = stage;
         this.root = new Group();
@@ -51,11 +57,15 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View,
     private void initializeUserInterface() {
         drawBackground(root);
         drawTitle(root);
+        drawButton(root);
+        drawSlider(root);
         drawSudokuBoard(root);
         drawTextFields(root);
         drawGridLines(root);
         stage.show();
     }
+
+
 
     private void drawGridLines(Group root) {
         int xAndY = 114;
@@ -154,6 +164,37 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View,
         root.getChildren().addAll(boardBackground);
     }
 
+    private void drawButton(Group root) {
+        this.resetBtn = new Button("New game");
+        this.resetBtn.setOnMouseReleased(this);
+        root.getChildren().add(resetBtn);
+    }
+
+    private void drawSlider(Group root) {
+        this.slider = new Slider();
+        slider.setMin(17);
+        slider.setMax(71);
+        slider.setValue(40);
+        slider.setShowTickLabels(true);
+        slider.setShowTickMarks(true);
+        slider.setMajorTickUnit(100000);
+        slider.setMinorTickCount(1);
+        slider.setBlockIncrement(10);
+        slider.setLayoutX(80);
+
+        this.label = new Label("# of clues: 40");
+        label.setLayoutX(260);
+
+        this.slider.valueProperty().addListener((ov, old_val, new_val) -> {
+            listener.onCluesNumChanged(new_val);
+
+            label.textProperty().setValue("# of clues: "+ new_val.intValue());
+        });
+
+        root.getChildren().add(slider);
+        root.getChildren().add(label);
+    }
+
     private void drawTitle(Group root) {
         Text title = new Text(235, 690, SUDOKU);
         title.setFill(Color.WHITE);
@@ -227,16 +268,20 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View,
     }
 
     @Override
-    public void handle(KeyEvent event) {
+    public void handle(Event event) {
+        System.out.println(event.getSource());
         if (event.getEventType() == KeyEvent.KEY_PRESSED) {
-            if(event.getText().matches("[0-9]")) {
-                int value = Integer.parseInt(event.getText());
+            KeyEvent keyEvent = (KeyEvent) event;
+            if(keyEvent.getText().matches("[0-9]")) {
+                int value = Integer.parseInt(keyEvent.getText());
                 handleInput(value, event.getSource());
-            } else if (event.getCode() == KeyCode.BACK_SPACE) {
-                handleInput(0, event.getSource());
+            } else if (keyEvent.getCode() == KeyCode.BACK_SPACE) {
+                handleInput(0, keyEvent.getSource());
             } else {
-                ((TextField) event.getSource()).setText("");
+                ((TextField) keyEvent.getSource()).setText("");
             }
+        } else if (event.getSource() == resetBtn) {
+            listener.onDialogClick();
         }
         event.consume();
     }

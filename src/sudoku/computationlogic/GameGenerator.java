@@ -9,11 +9,12 @@ import java.util.Random;
 import static sudoku.problemdomain.SudokuGame.GRID_BOUNDARY;
 
 public class GameGenerator {
-    public static int[][] getNewGameGrid() {
-        return unsolveGame(getSolvedGame());
+
+    public static int[][] getNewGameGrid(int gaps) {
+        return unsolveGame(getSolvedGame(), gaps);
     }
 
-    private static int[][] unsolveGame(int[][] solvedGame) {
+    private static int[][] unsolveGame(int[][] solvedGame, int gaps) {
         Random random = new Random(System.currentTimeMillis());
 
         boolean solvable = false;
@@ -23,7 +24,7 @@ public class GameGenerator {
             SudokuUtilities.copySudokuArrayValues(solvedGame, solvableArray);
             int index = 0;
 
-            while (index < 40) {
+            while (index < gaps) {
                 int xCoordinate = random.nextInt(GRID_BOUNDARY);
                 int yCoordinate = random.nextInt(GRID_BOUNDARY);
 

@@ -59,4 +59,9 @@ public class ControlLogic implements IUserInterfaceContract.EventListener {
             view.showError(Messages.ERROR);
         }
     }
+
+    @Override
+    public void onCluesNumChanged(Number new_val) {
+        GameLogic.setGaps(new_val.intValue());
+    }
 }

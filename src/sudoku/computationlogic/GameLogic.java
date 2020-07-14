@@ -13,10 +13,19 @@ import static sudoku.problemdomain.SudokuGame.GRID_BOUNDARY;
 
 public class GameLogic {
 
+
+    private static int gaps = 40;
+    public static void setGaps(int clues) {
+        GameLogic.gaps = 81 - clues;
+    }
+    public static int getGaps() {
+        return gaps;
+    }
+
     public static SudokuGame getNewGame() {
         return new SudokuGame(
                 GameState.NEW,
-                GameGenerator.getNewGameGrid()
+                GameGenerator.getNewGameGrid(gaps)
         );
     }
 

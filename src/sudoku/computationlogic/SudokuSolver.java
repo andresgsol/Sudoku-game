@@ -12,7 +12,7 @@ public class SudokuSolver {
         int index = 0;
         int input = 1;
 
-        while (index < 40) {
+        while (index < GameLogic.getGaps()) {
             Coordinates current = emptyCells[index];
             input = 1;
 
@@ -29,7 +29,7 @@ public class SudokuSolver {
                 } else {
                     index++;
 
-                    if (index == 39) return true;
+                    if (index == GameLogic.getGaps()-1) return true;
 
                     input = 10;
                 }
@@ -40,13 +40,13 @@ public class SudokuSolver {
     }
 
     private static Coordinates[] typeWriterEnumerate(int[][] puzzle) {
-        Coordinates[] emptyCells = new Coordinates[40];
+        Coordinates[] emptyCells = new Coordinates[GameLogic.getGaps()];
         int iterator = 0;
         for (int y = 0; y < GRID_BOUNDARY; y++) {
             for (int x = 0; x < GRID_BOUNDARY; x++) {
                 if (puzzle[x][y] == 0) {
                     emptyCells[iterator] = new Coordinates(x, y);
-                    if (iterator == 39) return emptyCells;
+                    if (iterator == GameLogic.getGaps()-1) return emptyCells;
                     iterator++;
                 }
             }

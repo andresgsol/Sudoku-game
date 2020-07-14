@@ -6,6 +6,7 @@ public interface IUserInterfaceContract {
     interface EventListener {
         void onSudokuInput(int x, int y, int input);
         void onDialogClick();
+        void onCluesNumChanged(Number new_val);
     }
 
     interface View {
